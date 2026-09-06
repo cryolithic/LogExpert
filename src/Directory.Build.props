@@ -1,10 +1,84 @@
 <Project>
   <PropertyGroup>
-    <Version>8.2.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <InformationalVersion>2.0.0.0-rc1</InformationalVersion>
+    <Version>1.40.1.0</Version>
+    <AssemblyVersion>1.40.4.0</AssemblyVersion>
+    <FileVersion>1.40.4.0</FileVersion>
+    <InformationalVersion>1.40.4.0</InformationalVersion>
     <Authors>Hirogen, zarunbal, RandallFlagg, TheNicker</Authors>
-    <Company>Log Expert</Company>
-    </PropertyGroup>
+    <Company>LogExperts</Company>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AssemblyOriginatorKeyFile>..\Solution Items\Key.snk</AssemblyOriginatorKeyFile>
+    <PublishAot>false</PublishAot>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LogExpert</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+    <!--
+      Where everything that ships is built. Anchored on this file rather than $(SolutionDir), which
+      is only defined when MSBuild is driven by the .sln: building a single project used to resolve
+      the same "$(SolutionDir)..\bin\..." to src\bin\ instead, so a lone `dotnet build Foo.csproj`
+      silently wrote somewhere other than the solution build - and the Nuke targets, the installer
+      and the CI artifact all look in bin\. Projects that do not ship (tests, benchmarks, the Nuke
+      build) keep the SDK default of a project-local bin\ and should not use these.
+
+      Configuration is defaulted here because this file is imported before the SDK gets round to
+      defaulting it, and an empty value would silently collapse bin\Debug\ to bin\. Same value the
+      SDK would pick, and the condition means an explicit -c or a solution build still wins.
+    -->
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <LogExpertBinRoot>$(MSBuildThisFileDirectory)..\bin\</LogExpertBinRoot>
+    <LogExpertBinDirectory>$(LogExpertBinRoot)$(Configuration)\</LogExpertBinDirectory>
+    <LogExpertPluginsDirectory>$(LogExpertBinDirectory)plugins\</LogExpertPluginsDirectory>
+    <LogExpertPluginsX86Directory>$(LogExpertBinDirectory)pluginsx86\</LogExpertPluginsX86Directory>
+    <!-- Deliberately outside the per-configuration folder; that is where it has always been. -->
+    <LogExpertDocsDirectory>$(LogExpertBinRoot)Docs\</LogExpertDocsDirectory>
+
+    <SignAssembly>true</SignAssembly>
+    <PackageProjectUrl>https://github.com/LogExperts/LogExpert</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/LogExperts/LogExpert</RepositoryUrl>
+    <PackageTags>LogExpert, Columnizer, Logging, Windows, Winforms</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>https://github.com/LogExperts/LogExpert/releases/tag/v.1.40.4</PackageReleaseNotes>
+    <PackageVersion>1.40.4.0</PackageVersion>
+    <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
+    <Product>LogExpert</Product>
+    <Copyright>Copyright © LogExpert 2025</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsTestProject>false</IsTestProject>
+    <UseWindowsForms>false</UseWindowsForms>
+    <ImportWindowsDesktopTargets>false</ImportWindowsDesktopTargets>
+    <EnableWindowsTargeting>false</EnableWindowsTargeting>
+
+    <AssemblyTitle>LogExpert</AssemblyTitle>
+    <Description>
+      LogExpert is a Windows tail program (a GUI replacement for the Unix tail command).
+
+      Summary of (most) features:
+
+      * Tail mode
+      * MDI-Interface with Tabs
+      * Search function (including RegEx)
+      * Bookmarks
+      * A very flexible filter view and possibility to filter to tab
+      * Highlighting lines via search criteria
+      * Triggers (e.g. create Bookmark or execute a plugin) via search criteria
+      * Columnizers: Plugins which split log lines into columns
+      * Unicode support
+      * log4j XML file support
+      * 3rd party plugin support
+      * Plugin API for more log file data sources
+    </Description>
+  </PropertyGroup>
+
+  <ItemGroup Label="Links">
+    <Compile Include="..\Solution Items\AssemblyInfo.cs" Link="Properties\SharedAssemblyInfo.cs" />
+    <None Include="..\Solution Items\Key.snk" Link="Key.snk" />
+    <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>
+

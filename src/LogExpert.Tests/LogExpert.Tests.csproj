@@ -1,44 +1,70 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <OutputType>Library</OutputType>
+
     <IsTestProject>true</IsTestProject>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>bin\$(Configuration)</OutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\Solution Items\Key.snk</AssemblyOriginatorKeyFile>
     <AssemblyTitle>LogExpert.Tests</AssemblyTitle>
-    <Product>LogExpert.Tests</Product>
-    <Copyright>Copyright ©  2018</Copyright>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <RootNamespace>LogExpert.Tests</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AutoColumnizer\AutoColumnizer.csproj" />
+    <ProjectReference Include="..\ColumnizerLib\ColumnizerLib.csproj" />
+    <ProjectReference Include="..\CsvColumnizer\CsvColumnizer.csproj" />
+    <ProjectReference Include="..\JsonColumnizer\JsonColumnizer.csproj" />
+    <ProjectReference Include="..\JsonCompactColumnizer\JsonCompactColumnizer.csproj" />
+    <ProjectReference Include="..\Log4jXmlColumnizer\Log4jXmlColumnizer.csproj" />
+    <ProjectReference Include="..\LogExpert\LogExpert.csproj" />
+    <ProjectReference Include="..\LogExpert.Audio\LogExpert.Audio.csproj" />
+    <ProjectReference Include="..\PluginRegistry\LogExpert.PluginRegistry.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <!-- Required by TabControllerTests to create themed DockPanel document tabs. -->
+    <PackageReference Include="DockPanelSuite.ThemeVS2015" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Data\50 MB UTF16.txt">
+
+  <ItemGroup Label="Data">
+    <Content Include="TestData\50 MB UTF16.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\50 MB UTF8.txt">
+    <Content Include="TestData\50 MB UTF8.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\50 MB.txt">
+    <Content Include="TestData\50 MB.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\LineEndings_LF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\LineEndings_CRLF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\LineEndings_CR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\LineEndings_Mixed.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\LineEndings_README.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Label="Test Data">
     <Content Include="TestData\JsonColumnizerTest_01.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\SquareBracketColumnizerTest_06.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\SquareBracketColumnizerTest_05.txt">
@@ -59,16 +85,6 @@
     <Content Include="TestData\XmlTest_01.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ColumnizerLib\ColumnizerLib.csproj" />
-    <ProjectReference Include="..\CsvColumnizer\CsvColumnizer.csproj" />
-    <ProjectReference Include="..\JsonColumnizer\JsonColumnizer.csproj" />
-    <ProjectReference Include="..\JsonCompactColumnizer\JsonCompactColumnizer.csproj" />
-    <ProjectReference Include="..\Log4jXmlColumnizer\Log4jXmlColumnizer.csproj" />
-    <ProjectReference Include="..\LogExpert\LogExpert.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="TestData\JsonCompactColumnizerTest_01.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -78,16 +94,24 @@
     <Content Include="TestData\JsonCompactColumnizerTest_03.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="TestData\CsvTest_01.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Solution Items\Key.snk">
-      <Link>Key.snk</Link>
-    </None>
+    <Content Include="TestData\semicolon.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\tab.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\comma.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\app.log">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\app.log.1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Update="TestData\organizations-1000.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -98,4 +122,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
 </Project>

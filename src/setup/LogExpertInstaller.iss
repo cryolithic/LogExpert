@@ -2,13 +2,20 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define AppName "LogExpert"
-#define AppVersion "1.10.0"
-#define AppURL "https://github.com/zarunbal/LogExpert"
+#define AppURL "https://github.com/LogExperts/LogExpert"
 #define AppExeName "LogExpert.exe"
 
 ; Path of the inno setup file
 #define AppPath SourcePath
 #define SetupName "LogExpert.Installer"
+#define ReleaseFolder = "..\..\bin\Release"
+
+; AppVersion can be passed via command line (e.g., iscc /dAppVersion="1.21.0").
+; The Nuke build system does this automatically using GitVersion.
+; If not provided, it is read from the built executable's file version.
+#ifndef AppVersion
+  #define AppVersion GetFileVersion(AddBackslash(SourcePath) + ReleaseFolder + "\" + AppExeName)
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -24,7 +31,7 @@ AppVerName={#AppName} {#AppVersion}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}
 AppUpdatesURL={#AppURL}
-DefaultDirName={pf}\{#AppName}
+DefaultDirName={commonpf}\{#AppName}
 DefaultGroupName={#AppName}
 AllowNoIcons=yes
 
@@ -34,7 +41,7 @@ LicenseFile=..\..\LICENSE
 OutputDir=..\..\bin\
 
 OutputBaseFilename={#SetupName}.{#SetupSetting("AppVersion")}
-SetupIconFile={#AppPath}..\LogExpert\Resources\logexpert.ico
+SetupIconFile={#AppPath}..\LogExpert.Resources\images\icons\logexpert.ico
 Compression=lzma2/normal
 SolidCompression=yes
 
@@ -57,43 +64,94 @@ Name: "german"; MessagesFile: "compiler:Languages\German.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\bin\Release\LogExpert.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\Licenses\*"; DestDir: "{app}\Licenses\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\AutoColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\ColumnizerLib.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\Licenses\*"; DestDir: "{app}\Licenses\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+;Plugins
 
 ;DLLS for CSV Suppport
-Source: "..\..\bin\Release\plugins\CsvColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\CsvHelper.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\CsvHelper.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\CsvHelper.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\CsvColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\CsvColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\CsvColumnizer.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\pluginsx86\de\CsvColumnizer.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\CsvColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\CsvColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-;Created by CSV Helper
-Source: "..\..\bin\Release\plugins\Microsoft.Bcl.AsyncInterfaces.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\Microsoft.Bcl.HashCode.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\System.Buffers.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\System.Memory.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\System.Numerics.Vectors.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\System.Threading.Tasks.Extensions.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\AutoColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\AutoColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-Source: "..\..\bin\Release\plugins\DefaultPlugins.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\FlashIconHighlighter.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\GlassfishColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\JsonColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\JsonCompactColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\Log4jXmlColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\Newtonsoft.Json.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\RegexColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\ColumnizerLib.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\ColumnizerLib.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\ColumnizerLib.xml"; DestDir: "{app}\plugins\"; Flags: ignoreversion
 
-;DLLS for SFTP Support
-Source: "..\..\bin\Release\plugins\SftpFileSystem.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\bin\Release\plugins\Renci.SshNet.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\de\ColumnizerLib.resources.dll"; DestDir: "{app}\pluginsx86\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\pluginsx86\ColumnizerLib.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\pluginsx86\ColumnizerLib.xml"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion
 
-Source: "..\..\bin\Release\ColumnizerLib.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\LogExpert.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\NLog.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\Start.cmd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\..\bin\Release\WeifenLuo.WinFormsUI.Docking.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\BouncyCastle.Cryptography.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\Microsoft.Extensions.DependencyInjection.Abstractions.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\Microsoft.Extensions.DependencyInjection.Abstractions.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\Microsoft.Extensions.Logging.Abstractions.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\Microsoft.Extensions.Logging.Abstractions.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\Newtonsoft.Json.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\Newtonsoft.Json.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\Renci.SshNet.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\DefaultPlugins.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\FlashIconHighlighter.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\FlashIconHighlighter.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\GlassfishColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\GlassfishColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\JsonColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\JsonColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\JsonCompactColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\JsonCompactColumnizer.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\JsonCompactColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\Log4jXmlColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\Log4jXmlColumnizer.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\Log4jXmlColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+Source: "{#ReleaseFolder}\plugins\RegexColumnizer.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\RegexColumnizer.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\RegexColumnizer.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+; DLLS for SFTP Support
+Source: "{#ReleaseFolder}\plugins\SftpFileSystem.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\SftpFileSystem.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\SftpFileSystem.Resources.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\SftpFileSystem.Resources.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\de\SftpFileSystem.Resources.resources.dll"; DestDir: "{app}\plugins\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\pluginsx86\de\SftpFileSystem.Resources.resources.dll"; DestDir: "{app}\pluginsx86\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\plugins\SftpFileSystem.manifest.json"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\plugins\Renci.SshNet.dll"; DestDir: "{app}\plugins\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#ReleaseFolder}\pluginsx86\Renci.SshNet.dll"; DestDir: "{app}\pluginsx86\"; Flags: ignoreversion recursesubdirs createallsubdirs
+
+; Culture satellite assemblies and non-DLL root files (not covered by the generated *.dll list)
+Source: "{#ReleaseFolder}\de\ColumnizerLib.resources.dll"; DestDir: "{app}\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\ColumnizerLib.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\de\LogExpert.Configuration.resources.dll"; DestDir: "{app}\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\de\LogExpert.Resources.resources.dll"; DestDir: "{app}\de\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\fr\Vanara.Core.resources.dll"; DestDir: "{app}\fr\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\LogExpert.xml"; DestDir: "{app}"; Flags: ignoreversion
+
+; LogExpert Files (non-DLL runtime files)
+Source: "{#ReleaseFolder}\files\json\usedComponents.json"; DestDir: "{app}\files\json\"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\LogExpert.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\LogExpert.runtimeconfig.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\LogExpert.deps.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#ReleaseFolder}\Start.cmd"; DestDir: "{app}"; Flags: ignoreversion
+
+; All runtime *.dll are shipped via the auto-generated, deps.json-driven list. This replaces the
+; former hand-maintained DLL list, which had drifted and omitted LogExpert.Audio/NAudio (#634).
+; GeneratedFiles.iss is (re)generated by the Nuke GenerateInstallerFileList target from the build output.
+#include "GeneratedFiles.iss"
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -101,23 +159,26 @@ Name: "{group}\{#AppName}"; Filename: "{app}\{#AppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#AppName}}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExeName}"; Tasks: desktopicon
 
+[InstallDelete]
+;DELETE ALL DLLs and PDBs and EXEs
+Type: files; Name: "{app}\*.dll"
+Type: files; Name: "{app}\*.pdb"
+Type: files; Name: "{app}\*.exe"
+
 [Run]
 Filename: "{app}\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Code]
-#include "ExtraFunctions.iss"
+#include "CodeDependencies.iss"
 
 function InitializeSetup(): Boolean;
-var 
-    dotNetInstalled: Boolean;
 begin
-    //check for .net Version 4+ before the installation starts
-    dotNetInstalled:=true;
-    if not(IsDotNetDetected('v4.7.2',0)) then
-    begin
-       MsgBox('Microsoft .NET Framework 4.7.2 or higher is required.'#13#13
-              'Please update your .net Framework installation!', mbInformation, MB_OK);
-       dotNetInstalled := false;
+    // silent setup means probably winget and it already resolves the .NET dependency from the manifest,
+    // only self-bootstrap for standalone installs, should check the .net dependency
+    if not WizardSilent then begin
+        Dependency_ForceX64 := True;
+        Dependency_AddDotNet100Desktop;
+        Dependency_ForceX64 := False;
     end;
-  result:= dotNetInstalled;
+    Result := True;
 end;

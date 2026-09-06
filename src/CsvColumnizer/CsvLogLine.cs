@@ -1,24 +1,21 @@
-﻿using LogExpert;
 
-namespace CsvColumnizer
+using ColumnizerLib;
+
+namespace CsvColumnizer;
+
+public class CsvLogLine (string fullLine, int lineNumber) : ILogLineMemory
 {
-    public class CsvLogLine : ILogLine
+    #region Properties
+
+    public ReadOnlyMemory<char> FullLine { get; } = fullLine.AsMemory();
+
+    public ReadOnlyMemory<char> Text { get; }
+
+    public int LineNumber { get; } = lineNumber;
+
+    #endregion
+
+    public CsvLogLine (ReadOnlyMemory<char> fullLine, int lineNumber) : this(fullLine.ToString(), lineNumber)
     {
-        public CsvLogLine(string fullLine, int lineNumber)
-        {
-            FullLine = fullLine;
-            LineNumber = lineNumber;
-        }
-
-        #region Properties
-
-        public string FullLine { get; set; }
-
-        public int LineNumber { get; set; }
-
-        string ITextValue.Text => FullLine;
-
-        #endregion
     }
-
 }

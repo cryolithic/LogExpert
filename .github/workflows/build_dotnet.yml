@@ -1,0 +1,58 @@
+name: .NET Core Desktop
+
+on:
+  # push:
+    # branches: [ "Development" ]
+
+  pull_request:
+    branches: [ "Development" ]
+    types: [opened, synchronize]
+
+env:
+  Solution: src/LogExpert.sln
+  Test_Project_LogExpert: src/LogExpert.Tests/LogExpert.Tests.csproj
+  Test_Project_ColumnizerLib: src/ColumnizerLib.UnitTests/ColumnizerLib.UnitTests.csproj
+  Test_Project_PluginRegistry: src/PluginRegistry.Tests/PluginRegistry.Tests.csproj
+  Test_Project_RegexColumnizer: src/RegexColumnizer.UnitTests/RegexColumnizer.UnitTests.csproj
+
+jobs:
+  build:
+    permissions:
+      contents: read  # Nothing is committed back; the job only builds and uploads an artifact.
+
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+
+    runs-on: windows-latest
+    name: Build Application - ${{ matrix.configuration }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.head_ref }}  # Checkout the PR branch
+
+      - name: Install .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build application
+        run: |
+          dotnet build ${{ env.Solution }} --nologo -v quiet -c ${{ matrix.configuration }}
+
+      # Built-in plugin hashes need no steps here. PluginRegistry generates its own table before it
+      # compiles, so every build - including a fork PR's - carries hashes for the binaries beside it.
+      # Nothing to verify, and nothing to commit back.
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Snapshot-${{ matrix.configuration }}
+          path: bin/${{ matrix.configuration }}
+          retention-days: 7
